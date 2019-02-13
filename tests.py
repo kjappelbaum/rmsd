@@ -165,6 +165,14 @@ class TestRMSD(unittest.TestCase):
         rmsd = self.rmsd(P, Q)
         self.assertAlmostEqual(0.0000, rmsd, places=3)
 
+    def test_rmsd_ase_periodic(self):
+        infile1 = self.xyzpath + 'CHA.cif'
+        infile2 = self.xyzpath + 'CHA_rot.cif'
+        p_atoms, P = self.get_coordinates_ase(infile1)
+        q_atoms, Q = self.get_coordinates_ase(infile2)
+        rmsd = self.rmsd(P, Q)
+        self.assertAlmostEqual(0.0000, rmsd, places=3)
+
     def test_kabash_algorith_pdb(self):
         infile1 = self.xyzpath + 'ci2_1.pdb'
         infile2 = self.xyzpath + 'ci2_2.pdb'
