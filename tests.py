@@ -47,6 +47,7 @@ class TestRMSD(unittest.TestCase):
         self.get_coordinates = rmsd.get_coordinates
         self.get_coordinates_pdb = rmsd.get_coordinates_pdb
         self.get_coordinates_xyz = rmsd.get_coordinates_xyz
+        self.get_coordinates_ase = rmsd.get_coordinates_ase
 
         self.kabsch_rmsd = rmsd.kabsch_rmsd
         self.kabsch_rotate = rmsd.kabsch_rotate
@@ -147,7 +148,15 @@ class TestRMSD(unittest.TestCase):
         q_atoms, Q = self.get_coordinates_xyz(infile2)
         rmsd = self.rmsd(P, Q)
         self.assertAlmostEqual(0.33512, rmsd, places=3)
-
+    
+    def test_rmsd_ase_xyz(self): 
+        infile1 = self.xyzpath + 'ethane.xyz'
+        infile2 = self.xyzpath + 'ethane_mini.xyz'
+        p_atoms, P = self.get_coordinates_ase(infile1)
+        q_atoms, Q = self.get_coordinates_ase(infile2)
+        rmsd = self.rmsd(P, Q)
+        self.assertAlmostEqual(0.33512, rmsd, places=3)
+    
     def test_kabash_algorith_pdb(self):
         infile1 = self.xyzpath + 'ci2_1.pdb'
         infile2 = self.xyzpath + 'ci2_2.pdb'

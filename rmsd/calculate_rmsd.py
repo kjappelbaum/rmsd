@@ -17,6 +17,8 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cdist
 
+# Use ase as fallback to read geometries
+from ase.io import read, write
 
 AXIS_SWAPS = np.array([
     [0, 1, 2],
@@ -640,7 +642,10 @@ def get_coordinates(filename, fmt):
         get_func = get_coordinates_xyz
     elif fmt == "pdb":
         get_func = get_coordinates_pdb
+    elif fmt == "ase": 
+        get_func = get_coordinates_ase
     else:
+        get_func = get_coordinates_ase
         exit("Could not recognize file format: {:s}".format(fmt))
 
     return get_func(filename)
@@ -732,6 +737,29 @@ def get_coordinates_pdb(filename):
 
     return atoms, V
 
+def get_coordinates_ase(filename): 
+    """
+    Get coordinates from file specified with filename. 
+    Can be used as fallback when geometry cannot be read with default options. 
+    
+    Parameters
+    ----------
+    filename: string
+        Filename to read
+
+    Returns
+    -------
+    atoms: list
+        List of atomic types
+    V: array
+        (N, 3) where N is the number of atoms 
+    """
+    
+    atoms = read(filename) 
+    atomic_symbols = atoms.get_chemical_symbols() 
+    positions = atoms.get_positions() 
+
+    return atomic_symbols, positions
 
 def get_coordinates_xyz(filename):
     """
