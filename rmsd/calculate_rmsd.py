@@ -20,6 +20,9 @@ from scipy.spatial.distance import cdist
 # Use ase as fallback to read geometries
 from ase.io import read, write
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 AXIS_SWAPS = np.array([
     [0, 1, 2],
     [0, 2, 1],
@@ -737,7 +740,40 @@ def get_coordinates_pdb(filename):
 
     return atoms, V
 
-def get_coordinates_ase(filename): 
+
+def rescale_periodic_system(atoms1, atoms2):
+    """
+    Scales two periodic systems to the same size.
+    Not the most efficient implementation yet.
+
+    For a first implementation, I assume that the number
+    of atoms in both cells is the same. Later, I will
+    create supercells to fix this.
+
+    Parameters
+    ----------
+        atoms1: ASE atoms object
+        atoms2: ASE atoms object
+
+    Returns
+    --------
+        atoms1_copy: ASE atoms object
+        atoms2: ASE atoms object
+    """
+
+    if len(atoms1) == len(atoms2):
+        atoms1_copy = atoms1.copy()
+        atoms1_copy.set_cell(atoms2.get_cell(), scale_atoms=True)
+        
+        return atoms1_copy, atoms2
+
+    else:
+        logging.debug('Only the case of equal number of atoms implemented')
+
+        return atoms1, atoms2
+
+
+def get_coordinates_ase(filename):
     """
     Get coordinates from file specified with filename. 
     Can be used as fallback when geometry cannot be read with default options. 
