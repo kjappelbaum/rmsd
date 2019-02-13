@@ -148,15 +148,23 @@ class TestRMSD(unittest.TestCase):
         q_atoms, Q = self.get_coordinates_xyz(infile2)
         rmsd = self.rmsd(P, Q)
         self.assertAlmostEqual(0.33512, rmsd, places=3)
-    
-    def test_rmsd_ase_xyz(self): 
+
+    def test_rmsd_ase_xyz(self):
         infile1 = self.xyzpath + 'ethane.xyz'
         infile2 = self.xyzpath + 'ethane_mini.xyz'
         p_atoms, P = self.get_coordinates_ase(infile1)
         q_atoms, Q = self.get_coordinates_ase(infile2)
         rmsd = self.rmsd(P, Q)
         self.assertAlmostEqual(0.33512, rmsd, places=3)
-    
+
+    def test_rmsd_ase_mixed(self):
+        infile1 = self.xyzpath + 'water.cif'
+        infile2 = self.xyzpath + 'water.xyz'
+        p_atoms, P = self.get_coordinates_ase(infile1)
+        q_atoms, Q = self.get_coordinates_ase(infile2)
+        rmsd = self.rmsd(P, Q)
+        self.assertAlmostEqual(0.0000, rmsd, places=3)
+
     def test_kabash_algorith_pdb(self):
         infile1 = self.xyzpath + 'ci2_1.pdb'
         infile2 = self.xyzpath + 'ci2_2.pdb'
@@ -323,10 +331,10 @@ class TestRMSD(unittest.TestCase):
 
         p_coord = np.array(
             [[-0.000000,  -0.000000,  -0.000000],
-            [  1.109398,  -0.000000,   0.000000],
-            [ -0.3697920, -0.7362220, -0.7429600],
-            [ -0.3698020,  1.011538,  -0.2661100],
-            [ -0.3698020, -0.2753120,  1.009070]])
+             [  1.109398,  -0.000000,   0.000000],
+             [ -0.3697920, -0.7362220, -0.7429600],
+             [ -0.3698020,  1.011538,  -0.2661100],
+             [ -0.3698020, -0.2753120,  1.009070]])
         q_coord = copy.deepcopy(p_coord)
         q_coord[:,[0, 2]] = q_coord[:,[2, 0]]
 
@@ -341,10 +349,10 @@ class TestRMSD(unittest.TestCase):
 
         p_coord = np.array(
             [[-0.000000,  -0.000000,  -0.000000],
-            [  1.109398,  -0.000000,   0.000000],
-            [ -0.3697920, -0.7362220, -0.7429600],
-            [ -0.3698020,  1.011538,  -0.2661100],
-            [ -0.3698020, -0.2753120,  1.009070]])
+             [  1.109398,  -0.000000,   0.000000],
+             [ -0.3697920, -0.7362220, -0.7429600],
+             [ -0.3698020,  1.011538,  -0.2661100],
+             [ -0.3698020, -0.2753120,  1.009070]])
         q_coord = copy.deepcopy(p_coord)
         q_coord[:,[0, 2]] = q_coord[:,[2, 0]]
 
@@ -359,10 +367,10 @@ class TestRMSD(unittest.TestCase):
 
         p_coord = np.array(
             [[-0.000000,  -0.000000,  -0.000000],
-            [  1.109398,  -0.000000,   0.000000],
-            [ -0.3697920, -0.7362220, -0.7429600],
-            [ -0.3698020,  1.011538,  -0.2661100],
-            [ -0.3698020, -0.2753120,  1.009070]])
+             [  1.109398,  -0.000000,   0.000000],
+             [ -0.3697920, -0.7362220, -0.7429600],
+             [ -0.3698020,  1.011538,  -0.2661100],
+             [ -0.3698020, -0.2753120,  1.009070]])
 
         # random reflection
         q_coord = copy.deepcopy(p_coord)
@@ -384,10 +392,10 @@ class TestRMSD(unittest.TestCase):
 
         p_coord = np.array(
             [[-0.000000,  -0.000000,  -0.000000],
-            [  1.109398,  -0.000000,   0.000000],
-            [ -0.3697920, -0.7362220, -0.7429600],
-            [ -0.3698020,  1.011538,  -0.2661100],
-            [ -0.3698020, -0.2753120,  1.009070]])
+             [  1.109398,  -0.000000,   0.000000],
+             [ -0.3697920, -0.7362220, -0.7429600],
+             [ -0.3698020,  1.011538,  -0.2661100],
+             [ -0.3698020, -0.2753120,  1.009070]])
         q_coord = copy.deepcopy(p_coord)
         q_coord[:,[0, 2]] = q_coord[:,[2, 0]] # swap [2,1,0]: prepare enantiomer coordinates (which is named as q_coord) of p_coord
 
