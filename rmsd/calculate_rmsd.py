@@ -19,6 +19,7 @@ from scipy.spatial.distance import cdist
 
 # Use ase as fallback to read geometries
 from ase.io import read, write
+from ase.build import niggli_reduce
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -748,7 +749,9 @@ def rescale_periodic_system(atoms1, atoms2):
 
     For a first implementation, I assume that the number
     of atoms in both cells is the same. Later, I will
-    create supercells to fix this.
+    create supercells to fix this. 
+
+    ToDo: First get Niggli cells for both structures
 
     Parameters
     ----------
@@ -761,17 +764,33 @@ def rescale_periodic_system(atoms1, atoms2):
         atoms2: ASE atoms object
     """
 
-    if len(atoms1) == len(atoms2):
-        atoms1_copy = atoms1.copy()
-        atoms1_copy.set_cell(atoms2.get_cell(), scale_atoms=True)
-        
-        return atoms1_copy, atoms2
+    #if len(atoms1) == len(atoms2):
+    atoms1_copy = atoms1.copy()
+    atoms1_copy.set_cell(atoms2.get_cell(), scale_atoms=True)
 
-    else:
-        logging.debug('Only the case of equal number of atoms implemented')
+    return atoms1_copy, atoms2
 
-        return atoms1, atoms2
+    #else:
+    #    logging.debug('Only the case of equal number of atoms implemented')
 
+    #    return atoms1, atoms2
+
+
+def parse_periodic_case(file_1, file_2):
+    atoms1 = read(file_1)
+    atoms2 = read(file_2)
+    niggli_reduce(atoms1)
+    niggli_reduce(atoms2)
+
+    a1, a2 = rescale_periodic_system(atoms1, atoms2)
+
+    atomic_symbols_1 = a1.get_chemical_symbols() 
+    positions_1 = a1.get_positions() 
+
+    atomic_symbols_2 = a2.get_chemical_symbols() 
+    positions_2 = a2.get_positions() 
+
+    return atomic_symbols_1, positions_1, atomic_symbols_2, positions_2
 
 def get_coordinates_ase(filename):
     """
@@ -915,8 +934,11 @@ See https://github.com/charnley/rmsd for citation information
     if args.format is None:
         args.format = args.structure_a.split('.')[-1]
 
-    p_all_atoms, p_all = get_coordinates(args.structure_a, args.format)
-    q_all_atoms, q_all = get_coordinates(args.structure_b, args.format)
+    if args.format == '.cif': 
+        p_all_atom, p_all, q_all_atom, q_all = parse_periodic_case(args.structure_a, args.structure_b)
+    else:
+        p_all_atoms, p_all = get_coordinates(args.structure_a, args.format)
+        q_all_atoms, q_all = get_coordinates(args.structure_b, args.format)
 
     p_size = p_all.shape[0]
     q_size = q_all.shape[0]

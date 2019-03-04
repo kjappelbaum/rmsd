@@ -48,6 +48,7 @@ class TestRMSD(unittest.TestCase):
         self.get_coordinates_pdb = rmsd.get_coordinates_pdb
         self.get_coordinates_xyz = rmsd.get_coordinates_xyz
         self.get_coordinates_ase = rmsd.get_coordinates_ase
+        self.parse_periodic_case = rmsd.parse_periodic_case
 
         self.kabsch_rmsd = rmsd.kabsch_rmsd
         self.kabsch_rotate = rmsd.kabsch_rotate
@@ -170,6 +171,13 @@ class TestRMSD(unittest.TestCase):
         infile2 = self.xyzpath + 'CHA_rot.cif'
         p_atoms, P = self.get_coordinates_ase(infile1)
         q_atoms, Q = self.get_coordinates_ase(infile2)
+        rmsd = self.rmsd(P, Q)
+        self.assertAlmostEqual(0.0000, rmsd, places=3)
+
+    def test_rmsd_cif(self):
+        infile1 = self.xyzpath + 'CHA.cif'
+        infile2 = self.xyzpath + 'CHA_rot.cif'
+        p_atoms, P, q_atoms, Q = self.parse_periodic_case(infile1, infile2)
         rmsd = self.rmsd(P, Q)
         self.assertAlmostEqual(0.0000, rmsd, places=3)
 
